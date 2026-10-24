@@ -1,0 +1,29 @@
+/data/
+
+.venv/
+
+dist/
+wheels/
+*.egg-info/
+build/
+
+# --- Lockfile ---
+# ONLY uncomment the line below if building a shared library/package where flexibility is required.
+# uv.lock
+
+# --- Python Artifacts ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# --- Environment Secrets & Configuration ---
+.env
+.env.*
+!.env.example
+.python-version
+
+# --- IDEs and Editors ---
+.vscode/
+.idea/
+.DS_Store
