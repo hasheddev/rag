@@ -1,0 +1,6 @@
+If we keep a very lengthy document in a single "chunk," we run into several problems:
+
+Semantic dilution: The embedding tries to capture every topic at once
+Token limits: Models have a limit to what they can fit in one embedding effectively
+Poor precision: Specific concepts get "averaged out"
+Irrelevant matches: Parts of the document may match queries poorly

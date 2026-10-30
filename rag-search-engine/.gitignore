@@ -27,3 +27,7 @@ __pycache__/
 .vscode/
 .idea/
 .DS_Store
+
+# large files
+
+chunk_embeddings.npy

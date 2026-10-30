@@ -1,13 +1,13 @@
 from pathlib import Path
 
-from utils.init import init_keyword_search_parser, keyword_search_cli_input
+from utils.parser import init_keyword_search_parser, keyword_search_cli_input
 from index.inverted_index import InvertedIndex
 from commands.keyword_search_commands import (
         build_command, search_command, term_frequency_command, inverse_document_frequency_command,
         tf_idf_command, bm25_idf_command, bm25_tf_command, bm25_search_command
     )
-base_dir = Path(__file__).parent.parent.absolute()
 
+base_dir = Path(__file__).parent.parent.absolute()
 
 movies_path = base_dir / "data/movies.json"
 stopword_path = base_dir / "data/stopwords.txt"

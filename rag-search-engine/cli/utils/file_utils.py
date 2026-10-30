@@ -2,7 +2,9 @@ from pathlib import Path
 import json
 from typing import Callable
 
-def load_movies(path: Path):
+from utils.types import MovieDatabase
+
+def load_movies(path: Path) -> MovieDatabase:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
