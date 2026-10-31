@@ -4,9 +4,9 @@ import pickle
 import math
 
 from utils.text_utils import  tokenize_text, remove_punctuations
-from utils.file_utils import load_movies, load_stopwords
+from utils.file_utils import load_movies, load_stopwords, get_index_paths
 from utils.constants import BM25_K1, BM25_B
-from utils.types import MovieDatabase, Movie
+from utils.types import MovieDatabase, Movie, FullMovieScore
 
 class InvertedIndex:
     index_path = 'index.pkl'
@@ -14,16 +14,18 @@ class InvertedIndex:
     doc_lengths_path = 'doc_lengths.pkl'
     term_frequency_path = 'term_frequencies.pkl'
 
-    def __init__(self, cache_path: Path, movies_path: Path, stopwords_path: Path) -> None:
-        self._path = cache_path
+    def __init__(self) -> None:
+        paths = get_index_paths()
+        self._path = paths["cache_dir_path"]
         self._index: dict[str, set[int]] =  {}
         self._docmap: dict[int, Movie] = {}
         self._term_frequencies: dict[int, Counter] = {}
         self._doc_lengths: dict[int, int] = {}
-        self._movies_path = movies_path
-        self._stopwords_path = stopwords_path
+        self._movies_path = paths["movies_path"]
+        self._stopwords_path = paths["stopword_path"]
         raw_stopwords = load_stopwords(self._stopwords_path, remove_punctuations)
         self._stopword_set = set(raw_stopwords)
+        paths = None
         
 
     @property
@@ -37,6 +39,10 @@ class InvertedIndex:
     @property
     def index(self):
         return self._index
+
+    @property
+    def index_cache_path(self):
+        return self._path / self.index_path
 
     @property
     def term_frequencies(self):
@@ -62,7 +68,7 @@ class InvertedIndex:
 
         return bm25_idf * bm25_tf
 
-    def bm25_search(self, query: str, limit: int):
+    def bm25_search(self, query: str, limit: int) -> list[FullMovieScore]:
         tokens = tokenize_text(query, self._stopword_set)
         scores: dict[int, float] = {}
 
@@ -72,7 +78,7 @@ class InvertedIndex:
                 scores.setdefault(doc_id, 0.0)
                 scores[doc_id] += self.bm25(doc_id, token)
         values = sorted(scores.items(), key=lambda v: v[1], reverse=True)[:limit]
-        movies_with_bm25_score = [(movie, value[1]) for value in values if (movie := self._docmap.get(value[0])) is not None]
+        movies_with_bm25_score: list[FullMovieScore] = [{"score": value[1], **movie} for value in values if (movie := self._docmap.get(value[0])) is not None]
         return movies_with_bm25_score
         
  
@@ -116,6 +122,7 @@ class InvertedIndex:
 
         if not movies:
             return
+
         for movie in movies:
             doc_id = movie["id"]
             self._docmap[doc_id] = movie

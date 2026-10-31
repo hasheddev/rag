@@ -1,4 +1,5 @@
 from typing import TypedDict
+from pathlib import Path
 
 class MovieScore(TypedDict):
     title: str
@@ -10,6 +11,13 @@ class Movie(TypedDict):
     id: int
     title: str
     description: str
+
+
+class FullMovieScore(TypedDict):
+    id: int
+    title: str
+    description: str
+    score: float
 
 
 class MovieDatabase(TypedDict):
@@ -32,3 +40,19 @@ class MovieChunkSearchResult(TypedDict):
     title: str
     document: str
     score: float
+
+class IndexPaths(TypedDict):
+    movies_path: Path
+    stopword_path: Path
+    cache_dir_path: Path
+
+
+class HybridWeightedMovieSearch(Movie):
+    keyword_score: float
+    semantic_score: float
+    hybrid_score: float
+
+class HybridRFFMovieSearch(Movie):
+    keyword_rank: int
+    semantic_rank: int
+    rrf_score: float
