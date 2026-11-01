@@ -1,5 +1,10 @@
 from typing import TypedDict
 from pathlib import Path
+from typing import Literal, Optional
+
+type enhance_type = Optional[Literal["spell", "rewrite", "expand"]]
+
+type rerank_type = Optional[Literal["individual", "batch", "cross_encoder"]]
 
 class MovieScore(TypedDict):
     title: str
@@ -56,3 +61,6 @@ class HybridRFFMovieSearch(Movie):
     keyword_rank: int
     semantic_rank: int
     rrf_score: float
+    llm_score: int
+    rerank_rank: int
+    encoder_rank: float

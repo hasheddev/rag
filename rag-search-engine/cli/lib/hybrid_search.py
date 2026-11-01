@@ -7,7 +7,8 @@ from utils.types import (
         Movie,
         MovieChunkSearchResult,
         HybridWeightedMovieSearch,
-        HybridRFFMovieSearch
+        HybridRFFMovieSearch,
+        rerank_type
     )
 from utils.hybrid_utils import normalize_scores, hybrid_score, rrf_score
 
@@ -70,7 +71,7 @@ class HybridSearch:
         sorted_results = sorted(result_map.values(), key=lambda m: m["hybrid_score"], reverse=True)
         return sorted_results[:limit]
 
-    def rrf_search(self, query: str, k: int, limit: int = 10) -> list[HybridRFFMovieSearch]:
+    def rrf_search(self, query: str, k: int, rerank_opt: rerank_type, limit: int = 10) -> list[HybridRFFMovieSearch]:
         fetch_limit = limit * 500
         bm25_results = self._bm25_search(query, fetch_limit)
         semantic_results = self._semantic_search(query, fetch_limit)
@@ -82,7 +83,10 @@ class HybridSearch:
                 "title": doc["title"],
                 "keyword_rank": i,
                 "rrf_score": 0.0,
-                "semantic_rank": 0
+                "semantic_rank": 0,
+                "llm_score": 0,
+                 "encoder_rank": 0.0,
+                "rerank_rank": 0
             }
         for i, doc in enumerate(semantic_results, 1):
             doc_id = doc["id"]
@@ -95,10 +99,17 @@ class HybridSearch:
                     "title": doc["title"],
                     "rrf_score": 0.0,
                     "keyword_rank": 0,
+                    "llm_score": 0,
+                    "rerank_rank": 0,
+                    "encoder_rank": 0.0,
                     "semantic_rank": i
                 }
         for movie in result_map.values():
             movie["rrf_score"] = rrf_score(movie["keyword_rank"], k) + rrf_score(movie["semantic_rank"], k)
         sorted_results = sorted(result_map.values(), key=lambda m: m["rrf_score"], reverse=True)
-        return sorted_results[:limit]
+        final_limit = limit
+        if rerank_opt is not None:
+            final_limit *= 5
+
+        return sorted_results[:final_limit]
         

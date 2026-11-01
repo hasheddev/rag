@@ -218,5 +218,17 @@ def init_hybrid_search_parser():
         default=60,
         help="Value used to calculate Reciprocal Rank Fusion score (default: 60)"
     )
+    rrf_parser.add_argument(
+        "--enhance",
+        type=str,
+        choices=["spell", "rewrite", "expand"],
+        help="Query enhancement method",
+    )
+    rrf_parser.add_argument(
+        "--rerank-method",
+        type=str,
+        choices=["individual", "batch", "cross_encoder"],
+        help="Query results re ranking method",
+    )
     
     return parser

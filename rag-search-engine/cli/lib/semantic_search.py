@@ -123,7 +123,7 @@ class ChunkedSemanticSearch(SemanticSearch):
             raise ValueError("No embeddings loaded. Call `load_or_create_chunk_embeddings` first.")
         query_embedding = self.generate_embedding(query)
         chunk_scores: list[MovieChunkScore] = []
-        for i in  range(len(self.chunk_embeddings)):
+        for i in range(len(self.chunk_embeddings)):
             similarity = cosine_similarity(query_embedding, self.chunk_embeddings[i])
             metadata = self.chunk_metadata[i]
             chunk_scores.append(
