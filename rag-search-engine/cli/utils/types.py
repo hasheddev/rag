@@ -6,6 +6,7 @@ type enhance_type = Optional[Literal["spell", "rewrite", "expand"]]
 
 type rerank_type = Optional[Literal["individual", "batch", "cross_encoder"]]
 
+
 class MovieScore(TypedDict):
     title: str
     description: str
@@ -40,22 +41,26 @@ class MovieChunkScore(TypedDict):
     movie_idx: int
     score: float
 
+
 class MovieChunkSearchResult(TypedDict):
     id: int
     title: str
     document: str
     score: float
 
+
 class IndexPaths(TypedDict):
     movies_path: Path
     stopword_path: Path
     cache_dir_path: Path
+    golden_dataset_path: Path
 
 
 class HybridWeightedMovieSearch(Movie):
     keyword_score: float
     semantic_score: float
     hybrid_score: float
+
 
 class HybridRFFMovieSearch(Movie):
     keyword_rank: int
@@ -64,3 +69,12 @@ class HybridRFFMovieSearch(Movie):
     llm_score: int
     rerank_rank: int
     encoder_rank: float
+
+
+class TestCase(TypedDict):
+    query: str
+    relevant_docs: list[str]
+
+
+class EvaluationDataset(TypedDict):
+    test_cases: list[TestCase]

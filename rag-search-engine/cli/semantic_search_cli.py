@@ -1,8 +1,16 @@
-from utils.parser import init_semantic_search_parser, SemanticSearchCommand
+from utils.search_parser import init_semantic_search_parser, SemanticSearchCommand
 from commands.semantic_search_commands import (
-        verify_model, embed_text, verify_embeddings, embed_query_text, search,
-        chunk, semantic_chunk, embed_chunks, search_chunked
-    )
+    verify_model,
+    embed_text,
+    verify_embeddings,
+    embed_query_text,
+    search,
+    chunk,
+    semantic_chunk,
+    embed_chunks,
+    search_chunked,
+)
+
 
 def main() -> None:
     parser = init_semantic_search_parser()
@@ -20,13 +28,17 @@ def main() -> None:
         case SemanticSearchCommand.SEARCH:
             search(args.query, limit=args.limit)
         case SemanticSearchCommand.CHUNK:
-            chunks = chunk(text=args.text, chunk_size=args.chunk_size, overlap=args.overlap)
-            print(f"Chunking {len(args.text)} characters") 
+            chunks = chunk(
+                text=args.text, chunk_size=args.chunk_size, overlap=args.overlap
+            )
+            print(f"Chunking {len(args.text)} characters")
             for index, chunk_text in enumerate(chunks, start=1):
                 print(f"{index}. {chunk_text}")
         case SemanticSearchCommand.SEMANTIC_CHUNK:
-            chunks = semantic_chunk(text=args.text, max_chunk_size=args.max_chunk_size, overlap=args.overlap)
-            print(f"Semantically chunking {len(args.text)} characters") 
+            chunks = semantic_chunk(
+                text=args.text, max_chunk_size=args.max_chunk_size, overlap=args.overlap
+            )
+            print(f"Semantically chunking {len(args.text)} characters")
             for index, chunk_text in enumerate(chunks, start=1):
                 print(f"{index}. {chunk_text}")
         case SemanticSearchCommand.EMBED_CHUNKS:
